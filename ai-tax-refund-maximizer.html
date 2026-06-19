@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Tax Refund Maximizer | IncomeAIHub</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0B0E14;
+    --surface:#131822;
+    --surface-2:#1A2030;
+    --border:#232A38;
+    --text:#F4F6F8;
+    --text-muted:#8B95A5;
+    --mint:#00D9A3;
+    --mint-dim:#0A6B53;
+    --amber:#FFB020;
+    --red:#FF5C5C;
+    --blue:#5B8CFF;
+    --radius:14px;
+    --display: 'Syne', sans-serif;
+    --body: 'DM Sans', sans-serif;
+    --mono: 'DM Mono', monospace;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--text);font-family:var(--body);line-height:1.5;}
+  a{color:inherit;}
+  .wrap{max-width:1040px;margin:0 auto;padding:0 24px;}
+  .ad-slot{
+    border:1px dashed var(--border); border-radius:10px; padding:14px;
+    text-align:center; color:var(--text-muted); font-size:12px; font-family:var(--mono);
+    margin:28px 0; letter-spacing:.04em;
+  }
+  /* ===== HERO ===== */
+  header.hero{padding:54px 0 36px; border-bottom:1px solid var(--border);}
+  .eyebrow{font-family:var(--mono); font-size:12px; color:var(--mint); letter-spacing:.12em; text-transform:uppercase; margin-bottom:14px;}
+  h1{font-family:var(--display); font-weight:800; font-size:clamp(30px,5vw,48px); line-height:1.08; margin:0 0 16px; max-width:620px;}
+  .hero-sub{color:var(--text-muted); font-size:16px; max-width:520px; margin-bottom:28px;}
+  .hero-grid{display:flex; gap:40px; align-items:center; flex-wrap:wrap;}
+  .hero-copy{flex:1; min-width:280px;}
+  .radar-box{width:220px; height:220px; flex-shrink:0; position:relative;}
+  .cta-row{display:flex; gap:12px; flex-wrap:wrap;}
+  .btn{font-family:var(--body); font-weight:600; font-size:14.5px; border:none; border-radius:10px; padding:13px 22px; cursor:pointer; transition:transform .15s ease, opacity .15s ease;}
+  .btn:active{transform:scale(.98);}
+  .btn-primary{background:var(--mint); color:#06231C;}
+  .btn-primary:hover{opacity:.9;}
+  .btn-ghost{background:transparent; color:var(--text); border:1px solid var(--border);}
+  .btn-ghost:hover{border-color:var(--mint); color:var(--mint);}
+  .disclaimer{font-size:12px; color:var(--text-muted); margin-top:16px; max-width:560px;}
+
+  /* ===== WIZARD ===== */
+  .panel{background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:32px; margin:32px 0;}
+  .step-head{display:flex; justify-content:space-between; align-items:baseline; margin-bottom:22px;}
+  .step-title{font-family:var(--display); font-weight:700; font-size:22px;}
+  .step-count{font-family:var(--mono); color:var(--text-muted); font-size:13px;}
+  .progress-track{height:4px; background:var(--surface-2); border-radius:4px; overflow:hidden; margin-bottom:30px;}
+  .progress-fill{height:100%; background:var(--mint); border-radius:4px; transition:width .3s ease;}
+  .field-grid{display:grid; grid-template-columns:1fr 1fr; gap:18px;}
+  .field{display:flex; flex-direction:column; gap:6px;}
+  .field.full{grid-column:1/-1;}
+  label{font-size:13px; color:var(--text-muted); font-weight:500;}
+  input[type=text], input[type=number], input[type=email], select{
+    background:var(--surface-2); border:1px solid var(--border); color:var(--text);
+    border-radius:8px; padding:11px 12px; font-family:var(--body); font-size:14.5px; outline:none;
+  }
+  input:focus, select:focus{border-color:var(--mint);}
+  .help{font-size:12px; color:var(--text-muted);}
+  .chip-group{display:flex; flex-wrap:wrap; gap:8px;}
+  .chip{border:1px solid var(--border); background:var(--surface-2); color:var(--text-muted); font-size:13px; padding:8px 14px; border-radius:999px; cursor:pointer; user-select:none; transition:all .15s ease;}
+  .chip.active{border-color:var(--mint); color:var(--mint); background:rgba(0,217,163,.08);}
+  .repeat-row{display:grid; grid-template-columns:1fr 1fr auto; gap:10px; margin-bottom:10px; align-items:center;}
+  .icon-btn{background:none; border:1px solid var(--border); color:var(--text-muted); border-radius:8px; padding:10px; cursor:pointer; font-size:14px;}
+  .icon-btn:hover{color:var(--red); border-color:var(--red);}
+  .add-link{background:none; border:none; color:var(--mint); font-family:var(--body); font-weight:600; font-size:13.5px; cursor:pointer; padding:0; text-align:left;}
+  .wizard-nav{display:flex; justify-content:space-between; margin-top:30px;}
+  .error-text{color:var(--red); font-size:12px; min-height:14px;}
+
+  /* ===== ANALYSIS LOADING ===== */
+  .scan-status{display:none; text-align:center; padding:48px 0;}
+  .scan-status.show{display:block;}
+  .scan-line{font-family:var(--mono); font-size:13.5px; color:var(--text-muted); margin:6px 0; opacity:0; animation:fadeIn .4s ease forwards;}
+  @keyframes fadeIn{to{opacity:1;}}
+
+  /* ===== DASHBOARD ===== */
+  #dashboard{display:none;}
+  #dashboard.show{display:block;}
+  .summary-card{background:linear-gradient(135deg, rgba(0,217,163,.12), rgba(91,140,255,.06)); border:1px solid var(--mint-dim); border-radius:var(--radius); padding:30px; margin:30px 0;}
+  .summary-figure{font-family:var(--mono); font-size:clamp(34px,5vw,52px); color:var(--mint); font-weight:500; margin:6px 0;}
+  .summary-label{color:var(--text-muted); font-size:14px;}
+  .score-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin:28px 0;}
+  .score-card{background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px; text-align:center;}
+  .score-num{font-family:var(--mono); font-size:30px; font-weight:500;}
+  .score-name{font-size:12px; color:var(--text-muted); margin-top:4px; text-transform:uppercase; letter-spacing:.04em;}
+  .score-bar-track{height:5px; background:var(--surface-2); border-radius:4px; margin-top:10px; overflow:hidden;}
+  .score-bar-fill{height:100%; border-radius:4px;}
+  .section-title{font-family:var(--display); font-weight:700; font-size:19px; margin:34px 0 14px;}
+  .rec-card{background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; margin-bottom:12px;}
+  .rec-top{display:flex; justify-content:space-between; gap:14px; align-items:flex-start;}
+  .rec-title{font-weight:600; font-size:15px; margin-bottom:4px;}
+  .rec-impact{font-family:var(--mono); color:var(--mint); font-size:16px; white-space:nowrap;}
+  .rec-meta{display:flex; gap:8px; margin-top:8px; flex-wrap:wrap;}
+  .tag{font-size:11px; font-family:var(--mono); padding:3px 9px; border-radius:6px; border:1px solid var(--border); color:var(--text-muted);}
+  .rec-desc{color:var(--text-muted); font-size:13.5px; margin-top:8px;}
+  .rec-next{font-size:13px; margin-top:8px; color:var(--text);}
+  .risk-card{border-left:3px solid var(--amber); background:var(--surface); border-radius:0 10px 10px 0; padding:14px 18px; margin-bottom:10px;}
+  .risk-card.high{border-left-color:var(--red);}
+  .risk-card.low{border-left-color:var(--blue);}
+  .risk-level{font-family:var(--mono); font-size:11px; text-transform:uppercase; letter-spacing:.06em;}
+  .action-list{counter-reset:step; list-style:none; padding:0;}
+  .action-list li{counter-increment:step; position:relative; padding:12px 0 12px 38px; border-bottom:1px solid var(--border); font-size:14.5px;}
+  .action-list li:last-child{border-bottom:none;}
+  .action-list li::before{content:counter(step); position:absolute; left:0; top:10px; width:24px; height:24px; border-radius:50%; background:var(--surface-2); border:1px solid var(--mint); color:var(--mint); font-family:var(--mono); font-size:12px; display:flex; align-items:center; justify-content:center;}
+  .insight-box{background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:20px 22px; font-size:14.5px; color:var(--text-muted); line-height:1.65;}
+  .dash-actions{display:flex; gap:12px; margin:30px 0; flex-wrap:wrap;}
+  footer{text-align:center; padding:40px 0 60px; color:var(--text-muted); font-size:12.5px;}
+
+  @media (max-width:680px){
+    .field-grid{grid-template-columns:1fr;}
+    .score-grid{grid-template-columns:1fr 1fr;}
+    .repeat-row{grid-template-columns:1fr;}
+    .hero-grid{flex-direction:column-reverse;}
+  }
+  @media print{
+    .ad-slot, .wizard-nav, #wizard, .cta-row, .dash-actions, header .radar-box{display:none !important;}
+    body{background:#fff; color:#111;}
+    .panel, .summary-card, .rec-card, .risk-card, .score-card, .insight-box{border-color:#ccc !important; background:#fafafa !important;}
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header class="hero">
+    <div class="hero-grid">
+      <div class="hero-copy">
+        <div class="eyebrow">IncomeAIHub · Tax Saving</div>
+        <h1>Find every rupee of tax you're missing.</h1>
+        <p class="hero-sub">AI Tax Refund Maximizer scans your income, investments and expenses, then ranks every legally claimable deduction by impact — with a step-by-step claim plan.</p>
+        <div class="cta-row">
+          <button class="btn btn-primary" onclick="document.getElementById('wizard').scrollIntoView({behavior:'smooth'})">Run My Free Tax Scan</button>
+          <button class="btn btn-ghost" onclick="document.getElementById('howitworks').scrollIntoView({behavior:'smooth'})">How it works</button>
+        </div>
+        <p class="disclaimer">Informational tool only — not a substitute for advice from a qualified CA / tax professional. Always confirm before filing.</p>
+      </div>
+      <div class="radar-box">
+        <svg id="radarSvg" viewBox="0 0 200 200" width="100%" height="100%">
+          <circle cx="100" cy="100" r="92" fill="none" stroke="#232A38" stroke-width="1"/>
+          <circle cx="100" cy="100" r="66" fill="none" stroke="#232A38" stroke-width="1"/>
+          <circle cx="100" cy="100" r="40" fill="none" stroke="#232A38" stroke-width="1"/>
+          <line x1="100" y1="8" x2="100" y2="192" stroke="#232A38" stroke-width="1"/>
+          <line x1="8" y1="100" x2="192" y2="100" stroke="#232A38" stroke-width="1"/>
+          <g id="radarSweep" style="transform-origin:100px 100px;">
+            <path d="M100,100 L100,8 A92,92 0 0,1 165,35 Z" fill="url(#sweepGrad)"/>
+          </g>
+          <defs>
+            <linearGradient id="sweepGrad" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#00D9A3" stop-opacity="0.55"/>
+              <stop offset="100%" stop-color="#00D9A3" stop-opacity="0"/>
+            </linearGradient>
+          </defs>
+          <circle id="blip1" cx="135" cy="70" r="4" fill="#00D9A3"/>
+          <circle id="blip2" cx="70" cy="120" r="3.5" fill="#FFB020"/>
+          <circle id="blip3" cx="120" cy="140" r="3" fill="#5B8CFF"/>
+          <text x="100" y="105" text-anchor="middle" font-family="DM Mono" font-size="22" fill="#F4F6F8" font-weight="500">AI</text>
+          <text x="100" y="122" text-anchor="middle" font-family="DM Sans" font-size="9" fill="#8B95A5">SCANNING</text>
+        </svg>
+      </div>
+    </div>
+  </header>
+
+  <div id="howitworks" class="ad-slot">Ad slot — 728×90 (above-the-fold, non-intrusive)</div>
+
+  <!-- ============ WIZARD ============ -->
+  <div id="wizard" class="panel">
+    <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:25%"></div></div>
+
+    <!-- STEP 1 -->
+    <div class="wizard-step" data-step="1">
+      <div class="step-head"><span class="step-title">Your Tax Profile</span><span class="step-count">Step 1 of 4</span></div>
+      <div class="field-grid">
+        <div class="field">
+          <label for="country">Country of Tax Residency *</label>
+          <select id="country" onchange="onCountryChange()">
+            <option value="">Select country</option>
+            <option value="India">India</option>
+            <option value="USA">United States</option>
+            <option value="UK">United Kingdom</option>
+            <option value="Canada">Canada</option>
+            <option value="Australia">Australia</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="taxYear">Tax Year *</label>
+          <select id="taxYear">
+            <option value="2025-26">2025-26</option>
+            <option value="2024-25">2024-25</option>
+            <option value="2023-24">2023-24</option>
+          </select>
+        </div>
+        <div class="field" id="stateField" style="display:none;">
+          <label for="stateProvince">State / Province *</label>
+          <input type="text" id="stateProvince" placeholder="e.g. California / Ontario">
+        </div>
+        <div class="field">
+          <label for="filingStatus">Filing Status *</label>
+          <select id="filingStatus">
+            <option value="Single">Single / Individual</option>
+            <option value="Married">Married / Joint</option>
+            <option value="HUF">HUF</option>
+            <option value="HeadOfHousehold">Head of Household</option>
+          </select>
+        </div>
+        <div class="field full">
+          <label>Employment Type * (select all that apply)</label>
+          <div class="chip-group" id="employmentChips">
+            <div class="chip" data-val="Salaried" onclick="toggleChip(this)">Salaried</div>
+            <div class="chip" data-val="Freelancer" onclick="toggleChip(this)">Freelancer / Consultant</div>
+            <div class="chip" data-val="Business" onclick="toggleChip(this)">Business Owner</div>
+          </div>
+        </div>
+        <div class="field">
+          <label for="dependents">Number of Dependents</label>
+          <input type="number" id="dependents" min="0" max="10" value="0">
+        </div>
+        <div class="field">
+          <label for="email">Email (for your report) *</label>
+          <input type="email" id="email" placeholder="you@example.com">
+        </div>
+      </div>
+      <div class="error-text" id="err1"></div>
+    </div>
+
+    <!-- STEP 2 -->
+    <div class="wizard-step" data-step="2" style="display:none;">
+      <div class="step-head"><span class="step-title">Income</span><span class="step-count">Step 2 of 4</span></div>
+      <div class="field-grid">
+        <div class="field">
+          <label for="salaryIncome">Annual Salary Income</label>
+          <input type="number" id="salaryIncome" min="0" placeholder="0">
+        </div>
+        <div class="field">
+          <label for="freelanceIncome">Annual Freelance / Business Income</label>
+          <input type="number" id="freelanceIncome" min="0" placeholder="0">
+        </div>
+        <div class="field">
+          <label for="rentalIncome">Rental Income</label>
+          <input type="number" id="rentalIncome" min="0" placeholder="0">
+        </div>
+        <div class="field">
+          <label for="capitalGains">Capital Gains</label>
+          <input type="number" id="capitalGains" min="0" placeholder="0">
+        </div>
+        <div class="field">
+          <label for="interestIncome">Interest / Dividend Income</label>
+          <input type="number" id="interestIncome" min="0" placeholder="0">
+        </div>
+      </div>
+      <div class="error-text" id="err2"></div>
+    </div>
+
+    <!-- STEP 3 -->
+    <div class="wizard-step" data-step="3" style="display:none;">
+      <div class="step-head"><span class="step-title">Investments & Deductions</span><span class="step-count">Step 3 of 4</span></div>
+      <div class="field-grid">
+        <div class="field">
+          <label for="healthPremium">Health / Life Insurance Premiums Paid</label>
+          <input type="number" id="healthPremium" min="0" placeholder="0">
+        </div>
+        <div class="field">
+          <label for="loanInterest">Home Loan / Education Loan Interest Paid</label>
+          <input type="number" id="loanInterest" min="0" placeholder="0">
+        </div>
+        <div class="field">
+          <label for="donations">Charitable Donations</label>
+          <input type="number" id="donations" min="0" placeholder="0">
+        </div>
+        <div class="field">
+          <label>Home Office Used for Work?</label>
+          <div class="chip-group">
+            <div class="chip" id="homeOfficeYes" onclick="setHomeOffice(true)">Yes</div>
+            <div class="chip active" id="homeOfficeNo" onclick="setHomeOffice(false)">No</div>
+          </div>
+        </div>
+      </div>
+      <div class="field full" style="margin-top:18px;">
+        <label>Investments (tax-advantaged accounts)</label>
+        <div id="investmentRows"></div>
+        <button class="add-link" onclick="addInvestmentRow()">+ Add another investment</button>
+      </div>
+      <div class="field full" style="margin-top:18px;">
+        <label>Deductions Already Claimed Last Year (used for gap analysis)</label>
+        <div class="chip-group" id="claimedChips"></div>
+      </div>
+      <div class="error-text" id="err3"></div>
+    </div>
+
+    <!-- STEP 4 -->
+    <div class="wizard-step" data-step="4" style="display:none;">
+      <div class="step-head"><span class="step-title">Life Events & Business Expenses</span><span class="step-count">Step 4 of 4</span></div>
+      <div class="field full">
+        <label>Major Life Events This Year</label>
+        <div class="chip-group" id="lifeEventChips">
+          <div class="chip" data-val="Marriage" onclick="toggleChip(this)">Marriage</div>
+          <div class="chip" data-val="New Child" onclick="toggleChip(this)">New Child</div>
+          <div class="chip" data-val="Home Purchase" onclick="toggleChip(this)">Home Purchase</div>
+          <div class="chip" data-val="Job Change" onclick="toggleChip(this)">Job Change</div>
+          <div class="chip" data-val="Relocation" onclick="toggleChip(this)">Relocation</div>
+          <div class="chip" data-val="Started Business" onclick="toggleChip(this)">Started Business</div>
+        </div>
+      </div>
+      <div class="field full" style="margin-top:18px;">
+        <label>Business / Freelance Expenses (if applicable)</label>
+        <div id="expenseRows"></div>
+        <button class="add-link" onclick="addExpenseRow()">+ Add another expense</button>
+      </div>
+      <div class="error-text" id="err4"></div>
+    </div>
+
+    <div class="wizard-nav">
+      <button class="btn btn-ghost" id="prevBtn" onclick="prevStep()" style="visibility:hidden;">Back</button>
+      <button class="btn btn-primary" id="nextBtn" onclick="nextStep()">Continue</button>
+    </div>
+  </div>
+
+  <!-- ============ SCAN STATUS ============ -->
+  <div class="scan-status" id="scanStatus">
+    <svg width="64" height="64" viewBox="0 0 64 64" style="margin-bottom:18px;">
+      <circle cx="32" cy="32" r="26" fill="none" stroke="#232A38" stroke-width="4"/>
+      <circle cx="32" cy="32" r="26" fill="none" stroke="#00D9A3" stroke-width="4" stroke-linecap="round" stroke-dasharray="163" stroke-dashoffset="40">
+        <animateTransform attributeName="transform" type="rotate" from="0 32 32" to="360 32 32" dur="1s" repeatCount="indefinite"/>
+      </circle>
+    </svg>
+    <div id="scanLines"></div>
+  </div>
+
+  <!-- ============ DASHBOARD ============ -->
+  <div id="dashboard">
+    <div class="summary-card">
+      <div class="summary-label" id="summaryLabel">We scanned your profile and found</div>
+      <div class="summary-figure" id="summaryFigure">—</div>
+      <div class="summary-label" id="summarySub"></div>
+    </div>
+
+    <div class="score-grid">
+      <div class="score-card"><div class="score-num" id="scoreOpportunity" style="color:var(--mint);">0</div><div class="score-name">Opportunity</div><div class="score-bar-track"><div class="score-bar-fill" id="barOpportunity" style="background:var(--mint); width:0%;"></div></div></div>
+      <div class="score-card"><div class="score-num" id="scoreGrowth" style="color:var(--blue);">0</div><div class="score-name">Growth</div><div class="score-bar-track"><div class="score-bar-fill" id="barGrowth" style="background:var(--blue); width:0%;"></div></div></div>
+      <div class="score-card"><div class="score-num" id="scoreWealth" style="color:#C58CFF;">0</div><div class="score-name">Wealth</div><div class="score-bar-track"><div class="score-bar-fill" id="barWealth" style="background:#C58CFF; width:0%;"></div></div></div>
+      <div class="score-card"><div class="score-num" id="scoreProfit" style="color:var(--amber);">0</div><div class="score-name">Profit</div><div class="score-bar-track"><div class="score-bar-fill" id="barProfit" style="background:var(--amber); width:0%;"></div></div></div>
+    </div>
+
+    <div class="ad-slot">Ad slot — 300×250 (between summary and detailed breakdown)</div>
+
+    <div class="section-title">AI Insight</div>
+    <div class="insight-box" id="aiInsight">—</div>
+
+    <div class="section-title">Ranked Opportunities</div>
+    <div id="recList"></div>
+
+    <div class="section-title">Risk Warnings</div>
+    <div id="riskList"></div>
+
+    <div class="section-title">Your Action Plan</div>
+    <ol class="action-list" id="actionList"></ol>
+
+    <div class="dash-actions">
+      <button class="btn btn-primary" onclick="window.print()">Download PDF Report</button>
+      <button class="btn btn-ghost" onclick="document.getElementById('wizard').scrollIntoView({behavior:'smooth'})">Run Another Scan</button>
+    </div>
+    <p class="disclaimer">This report is AI-generated for informational purposes and reflects estimates based on what you entered. It is not tax advice — confirm every item with a qualified CA / tax professional before filing.</p>
+  </div>
+
+  <footer>
+    AI Tax Refund Maximizer · Built for IncomeAIHub · For informational use only, not a substitute for professional tax advice.
+  </footer>
+</div>
+
+<script>
+/* ===================== STATE ===================== */
+let currentStep = 1;
+const employmentSelected = new Set();
+const lifeEventsSelected = new Set();
+const claimedSelected = new Set();
+let homeOfficeUsed = false;
+
+const COUNTRY_CLAIM_OPTIONS = {
+  India: ["80C (PPF/ELSS/Life Insurance)", "80D (Health Insurance)", "HRA", "Home Loan Interest (24b)", "80CCD(1B) NPS", "80E Education Loan", "Standard Deduction"],
+  USA: ["401(k) Contribution", "Traditional/Roth IRA", "HSA Contribution", "Mortgage Interest", "Student Loan Interest", "Standard Deduction", "Child Tax Credit"],
+  UK: ["Pension Contributions", "Marriage Allowance", "ISA Allowance", "Self-Assessment Expenses", "Gift Aid Donations"],
+  Canada: ["RRSP Contribution", "TFSA Contribution", "Childcare Expenses", "T2125 Business Expenses", "Home Office (T2200)"],
+  Australia: ["Work-Related Deductions", "Superannuation Co-contribution", "Negative Gearing", "BAS/GST Credits"]
+};
+const COUNTRY_INVESTMENT_TYPES = {
+  India: ["PPF","ELSS Mutual Fund","NPS","EPF","Tax-Saver FD"],
+  USA: ["401(k)","Traditional IRA","Roth IRA","HSA"],
+  UK: ["Workplace Pension","SIPP","ISA","LISA"],
+  Canada: ["RRSP","TFSA","RESP"],
+  Australia: ["Superannuation","Salary Sacrifice"]
+};
+const CURRENCY_SYMBOL = {India:"₹", USA:"$", UK:"£", Canada:"C$", Australia:"A$"};
+
+function onCountryChange(){
+  const c = document.getElementById('country').value;
+  document.getElementById('stateField').style.display = (c==="USA"||c==="Canada"||c==="Australia") ? "flex" : "none";
+  renderClaimedChips(c);
+}
+function renderClaimedChips(country){
+  const wrap = document.getElementById('claimedChips');
+  wrap.innerHTML = "";
+  claimedSelected.clear();
+  (COUNTRY_CLAIM_OPTIONS[country] || []).forEach(opt=>{
+    const chip = document.createElement('div');
+    chip.className = "chip"; chip.dataset.val = opt; chip.textContent = opt;
+    chip.onclick = ()=>toggleChip(chip, claimedSelected);
+    wrap.appendChild(chip);
+  });
+}
+function toggleChip(el, set){
+  if(!set){
+    // employment or life-event chips, determine which set by parent id
+    const parentId = el.parentElement.id;
+    set = parentId === "employmentChips" ? employmentSelected : lifeEventsSelected;
+  }
+  const v = el.dataset.val;
+  if(set.has(v)){ set.delete(v); el.classList.remove('active'); }
+  else { set.add(v); el.classList.add('active'); }
+}
+function setHomeOffice(val){
+  homeOfficeUsed = val;
+  document.getElementById('homeOfficeYes').classList.toggle('active', val);
+  document.getElementById('homeOfficeNo').classList.toggle('active', !val);
+}
+
+/* ---- repeatable rows ---- */
+function addInvestmentRow(){
+  const country = document.getElementById('country').value || "India";
+  const types = COUNTRY_INVESTMENT_TYPES[country] || ["Retirement Account"];
+  const row = document.createElement('div');
+  row.className = "repeat-row";
+  row.innerHTML = `
+    <select class="inv-type">${types.map(t=>`<option value="${t}">${t}</option>`).join('')}</select>
+    <input type="number" class="inv-amount" placeholder="Amount" min="0">
+    <button class="icon-btn" onclick="this.parentElement.remove()">✕</button>`;
+  document.getElementById('investmentRows').appendChild(row);
+}
+function addExpenseRow(){
+  const row = document.createElement('div');
+  row.className = "repeat-row";
+  row.innerHTML = `
+    <input type="text" class="exp-category" placeholder="Expense category (e.g. Software, Internet)">
+    <input type="number" class="exp-amount" placeholder="Amount" min="0">
+    <button class="icon-btn" onclick="this.parentElement.remove()">✕</button>`;
+  document.getElementById('expenseRows').appendChild(row);
+}
+
+/* ===================== WIZARD NAV ===================== */
+function showStep(n){
+  document.querySelectorAll('.wizard-step').forEach(s=> s.style.display = (+s.dataset.step===n) ? 'block':'none');
+  document.getElementById('progressFill').style.width = (n*25)+"%";
+  document.getElementById('prevBtn').style.visibility = n===1 ? 'hidden':'visible';
+  document.getElementById('nextBtn').textContent = n===4 ? 'Run AI Tax Scan' : 'Continue';
+}
+function validateStep(n){
+  const err = document.getElementById('err'+n);
+  err.textContent = "";
+  if(n===1){
+    if(!document.getElementById('country').value){ err.textContent="Please select your country."; return false; }
+    if(employmentSelected.size===0){ err.textContent="Select at least one employment type."; return false; }
+    const email = document.getElementById('email').value;
+    if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){ err.textContent="Enter a valid email."; return false; }
+    const c = document.getElementById('country').value;
+    if((c==="USA"||c==="Canada"||c==="Australia") && !document.getElementById('stateProvince').value){ err.textContent="State/Province is required."; return false; }
+  }
+  return true;
+}
+function nextStep(){
+  if(!validateStep(currentStep)) return;
+  if(currentStep < 4){ currentStep++; showStep(currentStep); window.scrollTo({top:document.getElementById('wizard').offsetTop-20, behavior:'smooth'}); }
+  else { runAnalysis(); }
+}
+function prevStep(){
+  if(currentStep>1){ currentStep--; showStep(currentStep); }
+}
+
+/* ===================== BUILD PROFILE ===================== */
+function buildProfile(){
+  const country = document.getElementById('country').value;
+  const investments = Array.from(document.querySelectorAll('#investmentRows .repeat-row')).map(r=>({
+    type: r.querySelector('.inv-type').value,
+    amount: Number(r.querySelector('.inv-amount').value || 0)
+  })).filter(i=>i.amount>0);
+  const expenses = Array.from(document.querySelectorAll('#expenseRows .repeat-row')).map(r=>({
+    category: r.querySelector('.exp-category').value,
+    amount: Number(r.querySelector('.exp-amount').value || 0)
+  })).filter(e=>e.category && e.amount>0);
+
+  return {
+    country,
+    taxYear: document.getElementById('taxYear').value,
+    stateProvince: document.getElementById('stateProvince').value || null,
+    filingStatus: document.getElementById('filingStatus').value,
+    employmentType: Array.from(employmentSelected),
+    dependents: Number(document.getElementById('dependents').value || 0),
+    income: {
+      salary: Number(document.getElementById('salaryIncome').value || 0),
+      freelanceOrBusiness: Number(document.getElementById('freelanceIncome').value || 0),
+      rental: Number(document.getElementById('rentalIncome').value || 0),
+      capitalGains: Number(document.getElementById('capitalGains').value || 0),
+      interestDividend: Number(document.getElementById('interestIncome').value || 0)
+    },
+    healthInsurancePremium: Number(document.getElementById('healthPremium').value || 0),
+    loanInterest: Number(document.getElementById('loanInterest').value || 0),
+    charitableDonations: Number(document.getElementById('donations').value || 0),
+    homeOfficeUsed,
+    investments,
+    deductionsAlreadyClaimed: Array.from(claimedSelected),
+    lifeEvents: Array.from(lifeEventsSelected),
+    businessExpenses: expenses
+  };
+}
+
+/* ===================== AI ANALYSIS ===================== */
+const SCAN_LINES = [
+  "Reading your income profile…",
+  "Cross-checking deduction eligibility…",
+  "Looking for missed combinations…",
+  "Scanning for audit-risk patterns…",
+  "Ranking opportunities by impact…",
+  "Building your action plan…"
+];
+
+async function runAnalysis(){
+  document.getElementById('wizard').style.display = 'none';
+  const scanBox = document.getElementById('scanStatus');
+  scanBox.classList.add('show');
+  const linesEl = document.getElementById('scanLines');
+  linesEl.innerHTML = "";
+  SCAN_LINES.forEach((t,i)=>{
+    setTimeout(()=>{
+      const d = document.createElement('div');
+      d.className = "scan-line"; d.textContent = t;
+      linesEl.appendChild(d);
+    }, i*420);
+  });
+
+  const profile = buildProfile();
+  const currency = CURRENCY_SYMBOL[profile.country] || "₹";
+
+  const systemPrompt = `You are a tax-savings opportunity analysis engine for IncomeAIHub's "AI Tax Refund Maximizer". You analyze a user's financial profile and identify legally available tax deductions, credits, and structuring opportunities they appear to be missing, specific to their country's general, well-known tax rules. You are NOT providing binding tax advice — frame everything as informational guidance to discuss with a qualified CA/tax professional. Respond with ONLY a raw JSON object, no markdown fences, no preamble, no explanation outside the JSON. The JSON must match this exact schema:
+{
+  "summaryHeadline": string (short, e.g. "12 unclaimed opportunities found"),
+  "totalEstimatedSavings": number (currency units, your best estimate based on the profile),
+  "opportunityScore": number (0-100),
+  "growthScore": number (0-100, how well current choices support long-term income/wealth growth),
+  "wealthScore": number (0-100, tax-efficiency of current investment allocation),
+  "profitScore": number (0-100, how efficiently business/freelance expenses are captured; if not self-employed, base on overall financial efficiency),
+  "aiInsight": string (3-5 sentence plain-language narrative explaining the biggest gaps and why),
+  "recommendations": [ { "title": string, "category": string, "estimatedImpact": number, "effort": "Low"|"Medium"|"High", "confidence": "High"|"Medium"|"Low", "description": string (1-2 sentences), "nextStep": string (concrete action), "deadline": string or null } ],
+  "riskFlags": [ { "title": string, "level": "Low"|"Medium"|"High", "reason": string, "fix": string } ],
+  "actionPlan": [ { "step": string, "detail": string } ]
+}
+Provide 5-9 recommendations sorted by estimatedImpact descending, 1-4 riskFlags (it's fine to have minimal risk if profile is clean), and 4-7 actionPlan steps. All currency values are in ${currency}.`;
+
+  const userPrompt = `Analyze this tax profile and return the JSON: ${JSON.stringify(profile)}`;
+
+  try{
+    const response = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model: "claude-sonnet-4-6",
+        max_tokens: 4000,
+        system: systemPrompt,
+        messages: [{ role: "user", content: userPrompt }]
+      })
+    });
+    const data = await response.json();
+    const textBlock = (data.content || []).find(b=>b.type==="text");
+    let raw = textBlock ? textBlock.text : "{}";
+    raw = raw.replace(/```json|```/g,"").trim();
+    const result = JSON.parse(raw);
+    renderDashboard(result, currency);
+  } catch(e){
+    console.error("Analysis error:", e);
+    linesEl.innerHTML = `<div class="scan-line" style="color:var(--red);">Something went wrong generating your report. Please try again.</div>`;
+    return;
+  }
+
+  scanBox.classList.remove('show');
+  document.getElementById('dashboard').classList.add('show');
+  document.getElementById('dashboard').scrollIntoView({behavior:'smooth'});
+}
+
+function animateScore(elId, barId, value, color){
+  const el = document.getElementById(elId);
+  const bar = document.getElementById(barId);
+  let cur = 0;
+  const step = Math.max(1, Math.round(value/30));
+  const t = setInterval(()=>{
+    cur = Math.min(value, cur+step);
+    el.textContent = cur;
+    bar.style.width = cur+"%";
+    if(cur>=value) clearInterval(t);
+  }, 20);
+}
+
+function renderDashboard(r, currency){
+  document.getElementById('summaryLabel').textContent = "We scanned your profile and found";
+  document.getElementById('summaryFigure').textContent = currency + Number(r.totalEstimatedSavings||0).toLocaleString();
+  document.getElementById('summarySub').textContent = r.summaryHeadline || "in potential tax savings";
+
+  animateScore('scoreOpportunity','barOpportunity', r.opportunityScore||0);
+  animateScore('scoreGrowth','barGrowth', r.growthScore||0);
+  animateScore('scoreWealth','barWealth', r.wealthScore||0);
+  animateScore('scoreProfit','barProfit', r.profitScore||0);
+
+  document.getElementById('aiInsight').textContent = r.aiInsight || "";
+
+  const recWrap = document.getElementById('recList');
+  recWrap.innerHTML = "";
+  (r.recommendations||[]).forEach(rec=>{
+    const card = document.createElement('div');
+    card.className = "rec-card";
+    card.innerHTML = `
+      <div class="rec-top">
+        <div>
+          <div class="rec-title">${rec.title}</div>
+          <div class="rec-desc">${rec.description||""}</div>
+        </div>
+        <div class="rec-impact">${currency}${Number(rec.estimatedImpact||0).toLocaleString()}</div>
+      </div>
+      <div class="rec-meta">
+        <span class="tag">${rec.category||""}</span>
+        <span class="tag">Effort: ${rec.effort||"—"}</span>
+        <span class="tag">Confidence: ${rec.confidence||"—"}</span>
+        ${rec.deadline ? `<span class="tag">Deadline: ${rec.deadline}</span>` : ""}
+      </div>
+      <div class="rec-next">→ ${rec.nextStep||""}</div>`;
+    recWrap.appendChild(card);
+  });
+
+  const riskWrap = document.getElementById('riskList');
+  riskWrap.innerHTML = "";
+  if((r.riskFlags||[]).length===0){
+    riskWrap.innerHTML = `<div class="risk-card low"><div class="risk-level">LOW</div>No significant risk flags found in this profile.</div>`;
+  }
+  (r.riskFlags||[]).forEach(risk=>{
+    const lvl = (risk.level||"Medium").toLowerCase();
+    const card = document.createElement('div');
+    card.className = "risk-card " + (lvl==="high"?"high": lvl==="low"?"low":"");
+    card.innerHTML = `<div class="risk-level">${risk.level||"Medium"}</div><strong>${risk.title}</strong><div class="rec-desc">${risk.reason||""}</div><div class="rec-next">Fix: ${risk.fix||""}</div>`;
+    riskWrap.appendChild(card);
+  });
+
+  const actionWrap = document.getElementById('actionList');
+  actionWrap.innerHTML = "";
+  (r.actionPlan||[]).forEach(step=>{
+    const li = document.createElement('li');
+    li.innerHTML = `<strong>${step.step}</strong> — ${step.detail||""}`;
+    actionWrap.appendChild(li);
+  });
+}
+
+/* init */
+showStep(1);
+addInvestmentRow();
+renderClaimedChips("");
+</script>
+</body>
+</html>
